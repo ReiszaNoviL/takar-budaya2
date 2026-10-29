@@ -204,6 +204,22 @@ body {
   margin-top: 2px;
 }
 
+/* Form Grid Identitas Acara (5 Input: Tanggal, Tempat, Acara, Penyelenggara, Admin) */
+.form-grid-identitas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 600px) {
+  .form-grid-identitas {
+    grid-template-columns: 1fr 1fr;
+  }
+  .field-span-full {
+    grid-column: span 2;
+  }
+}
+
 /* Form Grid 3 Kolom */
 .form-grid-3 {
   display: grid;

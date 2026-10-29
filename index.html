@@ -39,22 +39,30 @@
           <span class="step-badge">📋</span>
           <div>
             <h2 class="card-title">Informasi Acara Kebudayaan</h2>
-            <p class="card-desc">Identitas acara untuk pesan WhatsApp &amp; laporan resmi PDF</p>
+            <p class="card-desc">Identitas kegiatan untuk pesan WhatsApp &amp; laporan resmi PDF</p>
           </div>
         </div>
 
-        <div class="form-grid-3">
+        <div class="form-grid-identitas">
+          <div class="field-item">
+            <label for="tglAcara">Tanggal</label>
+            <input type="date" id="tglAcara" class="text-input">
+          </div>
+          <div class="field-item">
+            <label for="tempatAcara">Tempat / Lokasi</label>
+            <input type="text" id="tempatAcara" class="text-input" placeholder="Contoh: Lapangan Denggung / Pendopo" value="Lapangan Pemda Sleman">
+          </div>
           <div class="field-item">
             <label for="namaAcara">Nama Acara</label>
             <input type="text" id="namaAcara" class="text-input" placeholder="Contoh: Pentas Wayang Kulit" value="Pentas Seni &amp; Budaya">
           </div>
           <div class="field-item">
-            <label for="tglAcara">Tanggal Acara</label>
-            <input type="date" id="tglAcara" class="text-input">
+            <label for="penyelenggaraAcara">Penyelenggara</label>
+            <input type="text" id="penyelenggaraAcara" class="text-input" placeholder="Contoh: Dinas Kebudayaan" value="Dinas Kebudayaan (Kundha Kabudayan)">
           </div>
-          <div class="field-item">
-            <label for="jamAcara">Waktu / Jam</label>
-            <input type="text" id="jamAcara" class="text-input" placeholder="Contoh: 19.30 - 23.30 WIB" value="19.30 - 23.30 WIB">
+          <div class="field-item field-span-full">
+            <label for="adminInput">Admin (Petugas Input)</label>
+            <input type="text" id="adminInput" class="text-input" placeholder="Ketik nama admin / petugas pencatat..." value="Admin Kebudayaan">
           </div>
         </div>
       </section>
@@ -447,19 +455,29 @@
     <!-- Data Identitas Acara -->
     <table class="pdf-table-info">
       <tr>
-        <td style="width: 25%;"><strong>Nama Acara Budaya</strong></td>
+        <td style="width: 25%;"><strong>Tanggal Pelaksanaan</strong></td>
         <td style="width: 2%;">:</td>
-        <td style="width: 73%;" id="pdfNamaAcara">Pentas Seni &amp; Budaya</td>
+        <td style="width: 73%;" id="pdfTglAcara">-</td>
       </tr>
       <tr>
-        <td><strong>Tanggal Pelaksanaan</strong></td>
+        <td><strong>Tempat / Lokasi</strong></td>
         <td>:</td>
-        <td id="pdfTglAcara">-</td>
+        <td id="pdfTempatAcara">-</td>
       </tr>
       <tr>
-        <td><strong>Waktu / Jam Acara</strong></td>
+        <td><strong>Nama Acara Budaya</strong></td>
         <td>:</td>
-        <td id="pdfJamAcara">19.30 - 23.30 WIB</td>
+        <td id="pdfNamaAcara">Pentas Seni &amp; Budaya</td>
+      </tr>
+      <tr>
+        <td><strong>Penyelenggara</strong></td>
+        <td>:</td>
+        <td id="pdfPenyelenggaraAcara">-</td>
+      </tr>
+      <tr>
+        <td><strong>Admin (Petugas Input)</strong></td>
+        <td>:</td>
+        <td id="pdfAdminInput">-</td>
       </tr>
       <tr>
         <td><strong>Waktu Ekspor Laporan</strong></td>

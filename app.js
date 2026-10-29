@@ -11,9 +11,11 @@
 
   // --- STATE APLIKASI ---
   const state = {
-    namaAcara: 'Pentas Seni & Budaya',
     tglAcara: '',
-    jamAcara: '19.30 - 23.30 WIB',
+    tempatAcara: 'Lapangan Pemda Sleman',
+    namaAcara: 'Pentas Seni & Budaya',
+    penyelenggaraAcara: 'Dinas Kebudayaan (Kundha Kabudayan)',
+    adminInput: 'Admin Kebudayaan',
 
     // Modul aktif saat ini: 'outdoor' | 'indoor' | 'seniman'
     activeModule: 'outdoor',
@@ -110,17 +112,13 @@
     }
   }
 
-  // Bind input nama acara, tanggal, jam
+  // Bind input tanggal, tempat, acara, penyelenggara, admin
   function bindEventInputs() {
-    const inputNama = el('namaAcara');
     const inputTgl = el('tglAcara');
-    const inputJam = el('jamAcara');
-
-    if (inputNama) {
-      inputNama.addEventListener('input', (e) => {
-        state.namaAcara = e.target.value.trim() || 'Pentas Seni & Budaya';
-      });
-    }
+    const inputTempat = el('tempatAcara');
+    const inputNama = el('namaAcara');
+    const inputPenyelenggara = el('penyelenggaraAcara');
+    const inputAdmin = el('adminInput');
 
     if (inputTgl) {
       inputTgl.addEventListener('change', (e) => {
@@ -128,9 +126,27 @@
       });
     }
 
-    if (inputJam) {
-      inputJam.addEventListener('input', (e) => {
-        state.jamAcara = e.target.value.trim() || '-';
+    if (inputTempat) {
+      inputTempat.addEventListener('input', (e) => {
+        state.tempatAcara = e.target.value.trim() || '-';
+      });
+    }
+
+    if (inputNama) {
+      inputNama.addEventListener('input', (e) => {
+        state.namaAcara = e.target.value.trim() || 'Pentas Seni & Budaya';
+      });
+    }
+
+    if (inputPenyelenggara) {
+      inputPenyelenggara.addEventListener('input', (e) => {
+        state.penyelenggaraAcara = e.target.value.trim() || '-';
+      });
+    }
+
+    if (inputAdmin) {
+      inputAdmin.addEventListener('input', (e) => {
+        state.adminInput = e.target.value.trim() || '-';
       });
     }
   }
@@ -459,6 +475,13 @@
 
   function copyWhatsAppSummary() {
     const strTgl = formatTanggalID(state.tglAcara);
+    const metaBlock =
+`📅 *Tanggal:* ${strTgl}
+📍 *Tempat:* ${state.tempatAcara}
+🎪 *Acara:* ${state.namaAcara}
+🏛️ *Penyelenggara:* ${state.penyelenggaraAcara}
+👤 *Admin Input:* ${state.adminInput}`;
+
     let waText = '';
 
     if (state.activeModule === 'outdoor') {
@@ -470,9 +493,7 @@
 `*ESTIMASI PENONTON OUTDOOR ACARA BUDAYA*
 🏛️ *TAKAR BUDAYA* (Metode Herbert Jacobs)
 ---------------------------------------------
-🎪 *Nama Acara:* ${state.namaAcara}
-📅 *Tanggal:* ${strTgl}
-⏰ *Waktu:* ${state.jamAcara}
+${metaBlock}
 
 📊 *Rincian Parameter Outdoor:*
 1. Luas Area (A) : ${strA} m²
@@ -493,9 +514,7 @@ _Dihitung melalui instrumen bantu Takar Budaya._`;
 `*DATA PESERTA KEGIATAN INDOOR BUDAYA*
 🏛️ *TAKAR BUDAYA* (Modul Indoor / Ruangan)
 ---------------------------------------------
-🎪 *Nama Acara:* ${state.namaAcara}
-📅 *Tanggal:* ${strTgl}
-⏰ *Waktu:* ${state.jamAcara}
+${metaBlock}
 
 📊 *Rincian Kegiatan Indoor:*
 • Jenis Kegiatan : ${indoorName}
@@ -515,9 +534,7 @@ _Dihitung melalui instrumen bantu Takar Budaya._`;
 `*DATA JUMLAH SENIMAN / PELAKU BUDAYA*
 🏛️ *TAKAR BUDAYA* (Teknik Kategori Peran / Clustering)
 ---------------------------------------------
-🎪 *Nama Acara:* ${state.namaAcara}
-📅 *Tanggal:* ${strTgl}
-⏰ *Waktu:* ${state.jamAcara}
+${metaBlock}
 
 🎭 *Rincian Kategori Peran Seniman:*
 1. Pemeran Utama    : ${strUtama} Orang
@@ -571,9 +588,11 @@ _Dihitung melalui instrumen bantu Takar Budaya._`;
 
   // --- CETAK PDF LAPORAN A4 (SESUAI MODUL AKTIF, BERDIRI SENDIRI) ---
   function prepareAndPrintPDF() {
-    setElText('pdfNamaAcara', state.namaAcara);
     setElText('pdfTglAcara', formatTanggalID(state.tglAcara));
-    setElText('pdfJamAcara', state.jamAcara);
+    setElText('pdfTempatAcara', state.tempatAcara);
+    setElText('pdfNamaAcara', state.namaAcara);
+    setElText('pdfPenyelenggaraAcara', state.penyelenggaraAcara);
+    setElText('pdfAdminInput', state.adminInput);
 
     const now = new Date();
     const printTimeStr = now.toLocaleDateString('id-ID', {
