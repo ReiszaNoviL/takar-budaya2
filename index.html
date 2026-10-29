@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAKAR BUDAYA - Tata Kalkulasi Partisipasi Budaya</title>
+  <meta name="description" content="Kalkulator praktis estimasi penonton (Outdoor Jacobs & Indoor) serta penghitungan jumlah seniman (Clustering) gelaran acara budaya.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Latar Belakang Tradisional Jawa (Matte Sogan & Kayu Jati, Tanpa Neon) -->
+  <div class="jawa-bg">
+    <div class="kawung-watermark"></div>
+  </div>
+
+  <div class="main-wrapper">
+    <!-- Header Aplikasi -->
+    <header class="app-header">
+      <div class="jawa-aksara-badge">
+        <span class="ornament">꧁</span>
+        <span class="aksara-text">ꦠꦏꦂꦧꦸꦢꦪ</span>
+        <span class="ornament">꧂</span>
+      </div>
+      <h1 class="main-title">TAKAR BUDAYA</h1>
+      <p class="main-acronym">Tata Kalkulasi Partisipasi Budaya</p>
+      <p class="main-subtitle">Instrumen Penghitungan Penonton &amp; Pelaku Seni Budaya</p>
+      <div class="formula-tag">
+        <code id="headerMethodBadge">Metode Jacobs (P = A &times; D) &bull; Indoor &bull; Clustering Seniman</code>
+      </div>
+    </header>
+
+    <main class="content-container">
+      <!-- KARTU IDENTITAS ACARA (Berlaku untuk Semua Modul) -->
+      <section class="form-card">
+        <div class="card-title-group">
+          <span class="step-badge">📋</span>
+          <div>
+            <h2 class="card-title">Informasi Acara Kebudayaan</h2>
+            <p class="card-desc">Identitas acara untuk pesan WhatsApp &amp; laporan resmi PDF</p>
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="field-item">
+            <label for="namaAcara">Nama Acara</label>
+            <input type="text" id="namaAcara" class="text-input" placeholder="Contoh: Pentas Wayang Kulit" value="Pentas Seni &amp; Budaya">
+          </div>
+          <div class="field-item">
+            <label for="tglAcara">Tanggal Acara</label>
+            <input type="date" id="tglAcara" class="text-input">
+          </div>
+          <div class="field-item">
+            <label for="jamAcara">Waktu / Jam</label>
+            <input type="text" id="jamAcara" class="text-input" placeholder="Contoh: 19.30 - 23.30 WIB" value="19.30 - 23.30 WIB">
+          </div>
+        </div>
+      </section>
+
+      <!-- NAVIGASI 3 MODUL UTAMA -->
+      <nav class="module-nav-card" aria-label="Pilih Modul Kalkulasi">
+        <div class="module-nav-label">PILIH MODUL PENGHITUNGAN:</div>
+        <div class="module-tabs-grid" id="moduleTabs">
+          <button type="button" class="module-tab-btn active" data-module="outdoor" id="tabBtnOutdoor">
+            <span class="mod-tab-icon">🌳</span>
+            <span class="mod-tab-title">Outdoor</span>
+            <span class="mod-tab-sub">Metode Jacobs (A &times; D)</span>
+            <span class="mod-tab-pill" id="pillTotalOutdoor">1.000 org</span>
+          </button>
+
+          <button type="button" class="module-tab-btn" data-module="indoor" id="tabBtnIndoor">
+            <span class="mod-tab-icon">🏛️</span>
+            <span class="mod-tab-title">Indoor</span>
+            <span class="mod-tab-sub">Ruangan / Forum</span>
+            <span class="mod-tab-pill" id="pillTotalIndoor">50 org</span>
+          </button>
+
+          <button type="button" class="module-tab-btn" data-module="seniman" id="tabBtnSeniman">
+            <span class="mod-tab-icon">🎭</span>
+            <span class="mod-tab-title">Hitung Seniman</span>
+            <span class="mod-tab-sub">Kategori Peran</span>
+            <span class="mod-tab-pill" id="pillTotalSeniman">15 org</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- ====================================================================
+           MODUL 1: OUTDOOR (METODE HERBERT JACOBS: P = A x D)
+           ==================================================================== -->
+      <div class="module-panel" id="panelModuleOutdoor">
+        <!-- Parameter A (Luas Area) -->
+        <section class="form-card">
+          <div class="card-title-group">
+            <span class="step-badge">1</span>
+            <div>
+              <h2 class="card-title">Luas Area Penonton (A)</h2>
+              <p class="card-desc">Pilih ukuran cepat atau masukkan ukuran luas area efektif</p>
+            </div>
+          </div>
+
+          <!-- Tombol Cepat Luas -->
+          <div class="quick-buttons-row" id="quickAreaGroup">
+            <button type="button" class="quick-btn" data-area="300">300 m&sup2;</button>
+            <button type="button" class="quick-btn" data-area="500">500 m&sup2;</button>
+            <button type="button" class="quick-btn" data-area="700">700 m&sup2;</button>
+            <button type="button" class="quick-btn active" data-area="1000">1.000 m&sup2;</button>
+            <button type="button" class="quick-btn" data-area="custom">Ketik Sendiri &hellip;</button>
+          </div>
+
+          <!-- Input Manual Luas -->
+          <div class="custom-area-box" id="customAreaBox">
+            <div class="sub-toggle-tabs">
+              <button type="button" class="sub-tab active" id="tabModePL">Panjang &times; Lebar</button>
+              <button type="button" class="sub-tab" id="tabModeTotal">Total Luas (m&sup2;)</button>
+            </div>
+
+            <div id="panelPL" class="input-duo">
+              <div class="field-item">
+                <label for="inputPanjang">Panjang (meter)</label>
+                <input type="number" id="inputPanjang" class="text-input" value="40" min="1" step="1">
+              </div>
+              <div class="field-item">
+                <label for="inputLebar">Lebar (meter)</label>
+                <input type="number" id="inputLebar" class="text-input" value="25" min="1" step="1">
+              </div>
+            </div>
+
+            <div id="panelTotal" class="input-single hidden">
+              <div class="field-item">
+                <label for="inputTotalLuas">Total Luas Lokasi (m&sup2;)</label>
+                <input type="number" id="inputTotalLuas" class="text-input" value="1000" min="1" step="10">
+              </div>
+            </div>
+          </div>
+
+          <!-- Indikator Luas Terpilih -->
+          <div class="active-val-banner">
+            <span>Luas Lokasi Terhitung (A):</span>
+            <strong id="badgeLuas">1.000 m&sup2;</strong>
+          </div>
+        </section>
+
+        <!-- Parameter D (Kepadatan Penonton) -->
+        <section class="form-card">
+          <div class="card-title-group">
+            <span class="step-badge">2</span>
+            <div>
+              <h2 class="card-title">Kepadatan Penonton per m&sup2; (D)</h2>
+              <p class="card-desc">Perkiraan kerapatan posisi penonton di lokasi terbuka</p>
+            </div>
+          </div>
+
+          <div class="selection-grid" id="groupDensity">
+            <div class="select-card" data-val="0.5">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Senggang / Lesehan</span>
+                  <span class="val-pill">0,5 org/m&sup2;</span>
+                </div>
+                <p class="select-note">Lesehan santai, ruang gerak lega 1–2 meter antarorang.</p>
+              </div>
+            </div>
+
+            <div class="select-card active" data-val="1.0">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Sedang / Nyaman (Aman)</span>
+                  <span class="val-pill">1,0 org/m&sup2;</span>
+                </div>
+                <p class="select-note">Kondisi normal wajar, penonton leluasa tanpa berdesakan.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-val="2.0">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Berdiri Berdekatan</span>
+                  <span class="val-pill">2,0 org/m&sup2;</span>
+                </div>
+                <p class="select-note">Berdiri berdekatan sejangkauan tangan, tanpa desak-desakan.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-val="3.0">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Ramai Festival</span>
+                  <span class="val-pill">3,0 org/m&sup2;</span>
+                </div>
+                <p class="select-note">Suasana panggung ramai, bahu sesekali bersentuhan.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-val="4.0">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Sangat Padat (Depan Panggung)</span>
+                  <span class="val-pill">4,0 org/m&sup2;</span>
+                </div>
+                <p class="select-note">Kondisi berdesakan padat di barisan paling depan.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           MODUL 2: INDOOR (PELATIHAN / SARASEHAN / WORKSHOP / ISI SENDIRI)
+           ==================================================================== -->
+      <div class="module-panel hidden" id="panelModuleIndoor">
+        <!-- Jenis Kegiatan Indoor -->
+        <section class="form-card">
+          <div class="card-title-group">
+            <span class="step-badge">1</span>
+            <div>
+              <h2 class="card-title">Jenis Kegiatan Indoor (Ruangan)</h2>
+              <p class="card-desc">Pilih kategori kegiatan dalam ruangan atau ketik sendiri</p>
+            </div>
+          </div>
+
+          <div class="selection-grid" id="groupIndoorType">
+            <div class="select-card active" data-type="Pelatihan">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Pelatihan</span>
+                  <span class="val-pill">Bimtek / Kursus</span>
+                </div>
+                <p class="select-note">Kegiatan pelatihan keterampilan seni, adat, tradisi, atau bimbingan teknis budaya.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-type="Sarasehan">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Sarasehan</span>
+                  <span class="val-pill">Diskusi / Rembug</span>
+                </div>
+                <p class="select-note">Pertemuan dialog budaya, sarasehan warga, seminar, atau musyawarah pelestarian.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-type="Workshop">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Workshop</span>
+                  <span class="val-pill">Lokakarya Praktik</span>
+                </div>
+                <p class="select-note">Lokakarya praktik langsung bersama narasumber, empu, atau praktisi budaya.</p>
+              </div>
+            </div>
+
+            <div class="select-card" data-type="custom">
+              <div class="select-indicator"></div>
+              <div class="select-body">
+                <div class="select-header">
+                  <span class="select-title">Isi Sendiri &hellip;</span>
+                  <span class="val-pill">Kustom</span>
+                </div>
+                <p class="select-note">Masukkan nama atau bentuk kegiatan ruangan lainnya sesuai kebutuhan.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Nama Kegiatan Kustom -->
+          <div class="custom-indoor-box hidden" id="customIndoorTypeBox">
+            <div class="field-item">
+              <label for="inputIndoorCustomName">Nama Jenis Kegiatan Indoor</label>
+              <input type="text" id="inputIndoorCustomName" class="text-input" placeholder="Contoh: Pameran Museum / Lomba Sastra Jawa" value="Diskusi Budaya">
+            </div>
+          </div>
+        </section>
+
+        <!-- Input Jumlah Peserta Indoor -->
+        <section class="form-card">
+          <div class="card-title-group">
+            <span class="step-badge">2</span>
+            <div>
+              <h2 class="card-title">Jumlah Peserta / Hadirin Indoor</h2>
+              <p class="card-desc">Pilih angka cepat atau ketik langsung jumlah peserta (orang)</p>
+            </div>
+          </div>
+
+          <div class="quick-buttons-row" id="quickIndoorCountGroup">
+            <button type="button" class="quick-btn" data-count="30">30 Orang</button>
+            <button type="button" class="quick-btn active" data-count="50">50 Orang</button>
+            <button type="button" class="quick-btn" data-count="100">100 Orang</button>
+            <button type="button" class="quick-btn" data-count="150">150 Orang</button>
+            <button type="button" class="quick-btn" data-count="200">200 Orang</button>
+          </div>
+
+          <div class="indoor-number-input-wrap">
+            <label for="inputIndoorCount">Jumlah Peserta <span id="lblJenisIndoorAktif">(Pelatihan)</span>:</label>
+            <div class="number-stepper-row">
+              <button type="button" class="stepper-btn" id="btnIndoorMinus" aria-label="Kurangi peserta">&minus;</button>
+              <input type="number" id="inputIndoorCount" class="text-input input-big-num" value="50" min="0" step="1">
+              <button type="button" class="stepper-btn" id="btnIndoorPlus" aria-label="Tambah peserta">&plus;</button>
+            </div>
+            <span class="unit-hint">Orang / Peserta Terdaftar</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           MODUL 3: HITUNG SENIMAN (TEKNIK KATEGORI PERAN / CLUSTERING)
+           ==================================================================== -->
+      <div class="module-panel hidden" id="panelModuleSeniman">
+        <section class="form-card">
+          <div class="card-title-group">
+            <span class="step-badge">🎭</span>
+            <div>
+              <h2 class="card-title">Penghitungan Jumlah Seniman (Clustering)</h2>
+              <p class="card-desc">Teknik Kategori Peran pelaku/pendukung kegiatan kebudayaan</p>
+            </div>
+          </div>
+
+          <div class="seniman-cluster-list">
+            <!-- 1. Pemeran Utama -->
+            <div class="cluster-item-card">
+              <div class="cluster-info">
+                <div class="cluster-badge-row">
+                  <span class="cluster-num">1</span>
+                  <label for="inputSenimanUtama" class="cluster-title">Jumlah Pemeran Utama</label>
+                </div>
+                <p class="cluster-desc">Pemain utama, penyanyi, penari inti, dalang, pemeran tokoh, dll.</p>
+              </div>
+              <div class="cluster-input-box">
+                <div class="mini-stepper">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanUtama" data-delta="-1">&minus;</button>
+                  <input type="number" id="inputSenimanUtama" class="text-input cluster-num-input" value="5" min="0" step="1">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanUtama" data-delta="1">&plus;</button>
+                </div>
+                <span class="cluster-unit">Orang</span>
+              </div>
+            </div>
+
+            <!-- 2. Pemain Pendukung -->
+            <div class="cluster-item-card">
+              <div class="cluster-info">
+                <div class="cluster-badge-row">
+                  <span class="cluster-num">2</span>
+                  <label for="inputSenimanPendukung" class="cluster-title">Jumlah Pemain Pendukung</label>
+                </div>
+                <p class="cluster-desc">Penari latar, paduan suara, pemain figuran, pengiring vokal/sinden, dll.</p>
+              </div>
+              <div class="cluster-input-box">
+                <div class="mini-stepper">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanPendukung" data-delta="-1">&minus;</button>
+                  <input type="number" id="inputSenimanPendukung" class="text-input cluster-num-input" value="5" min="0" step="1">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanPendukung" data-delta="1">&plus;</button>
+                </div>
+                <span class="cluster-unit">Orang</span>
+              </div>
+            </div>
+
+            <!-- 3. Pemusik -->
+            <div class="cluster-item-card">
+              <div class="cluster-info">
+                <div class="cluster-badge-row">
+                  <span class="cluster-num">3</span>
+                  <label for="inputSenimanPemusik" class="cluster-title">Jumlah Pemusik</label>
+                </div>
+                <p class="cluster-desc">Pengiring musik di atas panggung seperti pemain gamelan (wiyaga), band, dll.</p>
+              </div>
+              <div class="cluster-input-box">
+                <div class="mini-stepper">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanPemusik" data-delta="-1">&minus;</button>
+                  <input type="number" id="inputSenimanPemusik" class="text-input cluster-num-input" value="5" min="0" step="1">
+                  <button type="button" class="mini-step-btn" data-target="inputSenimanPemusik" data-delta="1">&plus;</button>
+                </div>
+                <span class="cluster-unit">Orang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="active-val-banner" style="margin-top: 12px;">
+            <span>Rincian Kategori Peran:</span>
+            <strong id="badgeRincianSeniman">5 Utama + 5 Pendukung + 5 Pemusik</strong>
+          </div>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           KARTU HASIL: KOTAK UTAMA PERHITUNGAN TIAP MODUL (BERDIRI SENDIRI)
+           ==================================================================== -->
+      <section class="result-sticky-card">
+        <div class="result-inner">
+          <div class="result-header-text" id="txtResultHeader">ESTIMASI PENONTON OUTDOOR (P)</div>
+          <div class="result-big-number" id="txtTotalResult">1.000</div>
+          <div class="result-unit-label" id="txtResultUnit">ORANG / JIWA</div>
+
+          <div class="calc-proof-box">
+            <span class="proof-label" id="txtProofLabel">Rumus Metode Jacobs: P = A &times; D</span>
+            <div class="proof-math" id="txtFormulaProof">
+              1.000 m&sup2; &times; 1,0 = 1.000 orang
+            </div>
+          </div>
+
+          <!-- Tombol Aksi Praktis -->
+          <div class="action-btn-row">
+            <button type="button" class="action-btn btn-wa" id="btnSalinWA">
+              <span class="btn-icon">📋</span>
+              <span>Salin Pesan WhatsApp</span>
+            </button>
+            <button type="button" class="action-btn btn-print" id="btnCetakPDF">
+              <span class="btn-icon">🖨️</span>
+              <span>Cetak / Simpan PDF</span>
+            </button>
+          </div>
+
+          <!-- Toast Notifikasi -->
+          <div class="toast-box hidden" id="toastCopy">
+            ✅ Ringkasan berhasil disalin! Siap ditempel di WhatsApp.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Tradisional Sederhana -->
+    <footer class="app-footer">
+      <div class="footer-aksara">꧁ ꦠꦏꦂꦧꦸꦢꦪ ꧂</div>
+      <p>Takar Budaya &copy; 2026 &bull; Tata Kalkulasi Partisipasi Budaya.</p>
+      <p class="footer-sub">Instrumen Estimasi Partisipasi Penonton (Metode Jacobs &amp; Indoor) serta Pelaku Seni Budaya (Clustering).</p>
+    </footer>
+  </div>
+
+  <!-- ==========================================================================
+       DOKUMEN CETAK PDF LAPORAN RESMI (UKURAN FONT STANDAR LAPORAN A4)
+       ========================================================================== -->
+  <div id="printSheet" class="print-only">
+    <div class="pdf-header">
+      <div class="pdf-title">TAKAR BUDAYA</div>
+      <div class="pdf-subtitle">Laporan Hasil Kalkulasi Partisipasi Penonton &amp; Pelaku Gelaran Acara Budaya</div>
+      <div class="pdf-meta-method" id="pdfMetaMethod">Metode Ilmiah: Herbert Jacobs (1967) &bull; Kategori Peran (Clustering)</div>
+      <div class="pdf-divider"></div>
+    </div>
+
+    <!-- Data Identitas Acara -->
+    <table class="pdf-table-info">
+      <tr>
+        <td style="width: 25%;"><strong>Nama Acara Budaya</strong></td>
+        <td style="width: 2%;">:</td>
+        <td style="width: 73%;" id="pdfNamaAcara">Pentas Seni &amp; Budaya</td>
+      </tr>
+      <tr>
+        <td><strong>Tanggal Pelaksanaan</strong></td>
+        <td>:</td>
+        <td id="pdfTglAcara">-</td>
+      </tr>
+      <tr>
+        <td><strong>Waktu / Jam Acara</strong></td>
+        <td>:</td>
+        <td id="pdfJamAcara">19.30 - 23.30 WIB</td>
+      </tr>
+      <tr>
+        <td><strong>Waktu Ekspor Laporan</strong></td>
+        <td>:</td>
+        <td id="pdfWaktuCetak">-</td>
+      </tr>
+    </table>
+
+    <!-- Kontainer Dinamis Bagian Laporan PDF (Outdoor / Indoor / Seniman) -->
+    <div id="pdfDynamicContent"></div>
+
+    <div class="pdf-footer-note">
+      <div><strong>Rujukan Metodologi:</strong></div>
+      <div>1. Estimasi Penonton Terbuka (Outdoor): Herbert Jacobs (1967), <em>To Count a Crowd</em>, UC Berkeley (Rumus: P = A &times; D).</div>
+      <div>2. Penghitungan Pelaku Budaya / Seniman: Teknik Kategori Peran (<em>Clustering</em>) — Pemeran Utama, Pemain Pendukung, dan Pemusik.</div>
+      <div style="margin-top: 4pt; color: #555555; font-size: 8.5pt;">Dokumen ini merupakan hasil ekspor instrumen bantu kalkulator <strong>Takar Budaya</strong>.</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
