@@ -475,80 +475,48 @@
 
   function copyWhatsAppSummary() {
     const strTgl = formatTanggalID(state.tglAcara);
-    const metaBlock =
-`📅 *Tanggal:* ${strTgl}
+    const strA = formatIDRNumber(state.activeArea);
+    const strD = state.density.toString().replace('.', ',');
+    const strOut = formatIDRNumber(state.totalOutdoor);
+
+    const indoorName = getActiveIndoorName();
+    const strIn = formatIDRNumber(state.indoorCount);
+
+    const strUtama = formatIDRNumber(state.senimanUtama);
+    const strPendukung = formatIDRNumber(state.senimanPendukung);
+    const strPemusik = formatIDRNumber(state.senimanPemusik);
+    const strSen = formatIDRNumber(state.totalSeniman);
+
+    const waText =
+`*LAPORAN PARTISIPASI & PELAKU ACARA BUDAYA*
+🏛️ *TAKAR BUDAYA*
+---------------------------------------------
+📅 *Tanggal:* ${strTgl}
 📍 *Tempat:* ${state.tempatAcara}
 🎪 *Acara:* ${state.namaAcara}
 🏛️ *Penyelenggara:* ${state.penyelenggaraAcara}
-👤 *Admin Input:* ${state.adminInput}`;
-
-    let waText = '';
-
-    if (state.activeModule === 'outdoor') {
-      const strA = formatIDRNumber(state.activeArea);
-      const strD = state.density.toString().replace('.', ',');
-      const strOut = formatIDRNumber(state.totalOutdoor);
-
-      waText =
-`*ESTIMASI PENONTON OUTDOOR ACARA BUDAYA*
-🏛️ *TAKAR BUDAYA* (Metode Herbert Jacobs)
+👤 *Admin Input:* ${state.adminInput}
 ---------------------------------------------
-${metaBlock}
 
-📊 *Rincian Parameter Outdoor:*
-1. Luas Area (A) : ${strA} m²
-2. Kepadatan (D) : ${strD} orang/m² (${state.densityTitle})
+🌳 *I. MODUL OUTDOOR (Metode Jacobs: P = A × D)*
+• Luas Area (A) : ${strA} m²
+• Kepadatan (D) : ${strD} orang/m² (${state.densityTitle})
+• Perhitungan   : ${strA} m² × ${strD} = *${strOut} Orang*
+👉 *Total Penonton Outdoor: ${strOut} Orang*
 
-🧮 *Perhitungan Rumus (P = A × D):*
-${strA} m² × ${strD} = *${strOut} Orang*
-
-🎯 *TOTAL ESTIMASI PENONTON OUTDOOR:*
-👉 *${strOut} ORANG / JIWA*
----------------------------------------------
-_Dihitung melalui instrumen bantu Takar Budaya._`;
-    } else if (state.activeModule === 'indoor') {
-      const indoorName = getActiveIndoorName();
-      const strIn = formatIDRNumber(state.indoorCount);
-
-      waText =
-`*DATA PESERTA KEGIATAN INDOOR BUDAYA*
-🏛️ *TAKAR BUDAYA* (Modul Indoor / Ruangan)
----------------------------------------------
-${metaBlock}
-
-📊 *Rincian Kegiatan Indoor:*
+🏛️ *II. MODUL INDOOR (Kegiatan Ruangan)*
 • Jenis Kegiatan : ${indoorName}
-• Keterangan     : ${state.indoorCategoryNote}
+• Jumlah Peserta : *${strIn} Orang*
+👉 *Total Peserta Indoor: ${strIn} Orang*
 
-🎯 *TOTAL PESERTA INDOOR (${indoorName.toUpperCase()}):*
-👉 *${strIn} ORANG / PESERTA*
----------------------------------------------
-_Dihitung melalui instrumen bantu Takar Budaya._`;
-    } else if (state.activeModule === 'seniman') {
-      const strUtama = formatIDRNumber(state.senimanUtama);
-      const strPendukung = formatIDRNumber(state.senimanPendukung);
-      const strPemusik = formatIDRNumber(state.senimanPemusik);
-      const strSen = formatIDRNumber(state.totalSeniman);
-
-      waText =
-`*DATA JUMLAH SENIMAN / PELAKU BUDAYA*
-🏛️ *TAKAR BUDAYA* (Teknik Kategori Peran / Clustering)
----------------------------------------------
-${metaBlock}
-
-🎭 *Rincian Kategori Peran Seniman:*
+🎭 *III. MODUL HITUNG SENIMAN (Teknik Clustering)*
 1. Pemeran Utama    : ${strUtama} Orang
 2. Pemain Pendukung : ${strPendukung} Orang
 3. Pemusik          : ${strPemusik} Orang
-
-🧮 *Perhitungan Clustering:*
-${strUtama} Utama + ${strPendukung} Pendukung + ${strPemusik} Pemusik = *${strSen} Orang*
-
-🎯 *TOTAL JUMLAH SENIMAN:*
-👉 *${strSen} ORANG / SENIMAN*
+• Perhitungan       : ${strUtama} + ${strPendukung} + ${strPemusik} = *${strSen} Orang*
+👉 *Total Jumlah Seniman: ${strSen} Orang*
 ---------------------------------------------
 _Dihitung melalui instrumen bantu Takar Budaya._`;
-    }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(waText).then(() => {
@@ -586,13 +554,14 @@ _Dihitung melalui instrumen bantu Takar Budaya._`;
     }, 2800);
   }
 
-  // --- CETAK PDF LAPORAN A4 (SESUAI MODUL AKTIF, BERDIRI SENDIRI) ---
+  // --- CETAK PDF LAPORAN A4 (GABUNGAN 3 MODUL JADI 1 DOKUMEN, MASING-MASING BERDIRI SENDIRI) ---
   function prepareAndPrintPDF() {
     setElText('pdfTglAcara', formatTanggalID(state.tglAcara));
     setElText('pdfTempatAcara', state.tempatAcara);
     setElText('pdfNamaAcara', state.namaAcara);
     setElText('pdfPenyelenggaraAcara', state.penyelenggaraAcara);
     setElText('pdfAdminInput', state.adminInput);
+    setElText('pdfMetaMethod', 'Metode Ilmiah: Outdoor (Herbert Jacobs P = A × D) • Indoor • Hitung Seniman (Clustering)');
 
     const now = new Date();
     const printTimeStr = now.toLocaleDateString('id-ID', {
@@ -606,140 +575,127 @@ _Dihitung melalui instrumen bantu Takar Budaya._`;
     const container = el('pdfDynamicContent');
     if (!container) return;
 
-    let html = '';
+    const strA = formatIDRNumber(state.activeArea);
+    const strD = state.density.toString().replace('.', ',');
+    const strOut = formatIDRNumber(state.totalOutdoor);
 
-    if (state.activeModule === 'outdoor') {
-      setElText('pdfMetaMethod', 'Modul Outdoor • Metode Ilmiah: Herbert Jacobs (1967) • Rumus: P = A × D');
-      const strA = formatIDRNumber(state.activeArea);
-      const strD = state.density.toString().replace('.', ',');
-      const strOut = formatIDRNumber(state.totalOutdoor);
+    const indoorName = getActiveIndoorName();
+    const strIn = formatIDRNumber(state.indoorCount);
 
-      html = `
-        <div class="pdf-section-title">I. RINCIAN PARAMETER LAPANGAN (MODUL OUTDOOR)</div>
-        <table class="pdf-table-data">
-          <thead>
-            <tr>
-              <th style="width: 6%; text-align: center;">No</th>
-              <th style="width: 32%;">Parameter Penghitungan</th>
-              <th style="width: 12%; text-align: center;">Simbol</th>
-              <th style="width: 20%; text-align: right;">Nilai Terukur</th>
-              <th style="width: 30%;">Keterangan Lapangan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="text-align: center;">1</td>
-              <td><strong>Luas Area Efektif</strong></td>
-              <td style="text-align: center;"><code>A</code></td>
-              <td style="text-align: right; font-weight: bold;">${strA} m&sup2;</td>
-              <td>${state.descArea}</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;">2</td>
-              <td><strong>Kepadatan Penonton</strong></td>
-              <td style="text-align: center;"><code>D</code></td>
-              <td style="text-align: right; font-weight: bold;">${strD} org/m&sup2;</td>
-              <td>${state.densityTitle} &mdash; ${state.densityDesc}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="pdf-section-title">II. HASIL KALKULASI ESTIMASI PENONTON OUTDOOR</div>
-        <div class="pdf-result-card">
-          <div class="pdf-calc-line">
-            <strong>Pembuktian Rumus Jacobs (P = A &times; D):</strong><br>
-            <span>${strA} m&sup2; &times; ${strD} = ${strOut} Orang</span>
-          </div>
-          <div class="pdf-banner-total">
-            <span>TOTAL ESTIMASI PENONTON OUTDOOR:</span>
-            <strong>${strOut} ORANG / JIWA</strong>
-          </div>
+    const strUtama = formatIDRNumber(state.senimanUtama);
+    const strPendukung = formatIDRNumber(state.senimanPendukung);
+    const strPemusik = formatIDRNumber(state.senimanPemusik);
+    const strSen = formatIDRNumber(state.totalSeniman);
+
+    const html = `
+      <!-- BAGIAN I: MODUL OUTDOOR -->
+      <div class="pdf-section-title">I. MODUL OUTDOOR &mdash; ESTIMASI PENONTON (METODE HERBERT JACOBS: P = A &times; D)</div>
+      <table class="pdf-table-data">
+        <thead>
+          <tr>
+            <th style="width: 6%; text-align: center;">No</th>
+            <th style="width: 32%;">Parameter Penghitungan</th>
+            <th style="width: 12%; text-align: center;">Simbol</th>
+            <th style="width: 20%; text-align: right;">Nilai Terukur</th>
+            <th style="width: 30%;">Keterangan Lapangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">1</td>
+            <td><strong>Luas Area Efektif</strong></td>
+            <td style="text-align: center;"><code>A</code></td>
+            <td style="text-align: right; font-weight: bold;">${strA} m&sup2;</td>
+            <td>${state.descArea}</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">2</td>
+            <td><strong>Kepadatan Penonton</strong></td>
+            <td style="text-align: center;"><code>D</code></td>
+            <td style="text-align: right; font-weight: bold;">${strD} org/m&sup2;</td>
+            <td>${state.densityTitle} &mdash; ${state.densityDesc}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pdf-result-card">
+        <div class="pdf-calc-line">
+          <strong>Perhitungan Rumus (P = A &times; D):</strong> ${strA} m&sup2; &times; ${strD} = ${strOut} Orang
         </div>
-      `;
-    } else if (state.activeModule === 'indoor') {
-      const indoorName = getActiveIndoorName();
-      const strIn = formatIDRNumber(state.indoorCount);
-      setElText('pdfMetaMethod', `Modul Indoor (Kegiatan Ruangan) • Kategori: ${indoorName}`);
-
-      html = `
-        <div class="pdf-section-title">I. RINCIAN PARTISIPASI KEGIATAN INDOOR (RUANGAN)</div>
-        <table class="pdf-table-data">
-          <thead>
-            <tr>
-              <th style="width: 6%; text-align: center;">No</th>
-              <th style="width: 34%;">Kategori Kegiatan Indoor</th>
-              <th style="width: 22%; text-align: right;">Jumlah Peserta</th>
-              <th style="width: 38%;">Keterangan Kegiatan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="text-align: center;">1</td>
-              <td><strong>${indoorName}</strong></td>
-              <td style="text-align: right; font-weight: bold;">${strIn} Orang</td>
-              <td>${state.indoorCategoryNote}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="pdf-section-title">II. HASIL TOTAL PESERTA INDOOR</div>
-        <div class="pdf-result-card">
-          <div class="pdf-banner-total" style="border-top: none; padding-top: 0;">
-            <span>TOTAL PESERTA KEGIATAN INDOOR (${indoorName.toUpperCase()}):</span>
-            <strong>${strIn} ORANG / PESERTA</strong>
-          </div>
+        <div class="pdf-banner-total">
+          <span>TOTAL ESTIMASI PENONTON OUTDOOR:</span>
+          <strong>${strOut} ORANG / JIWA</strong>
         </div>
-      `;
-    } else if (state.activeModule === 'seniman') {
-      setElText('pdfMetaMethod', 'Modul Hitung Seniman • Teknik Kategori Peran (Clustering)');
-      const strUtama = formatIDRNumber(state.senimanUtama);
-      const strPendukung = formatIDRNumber(state.senimanPendukung);
-      const strPemusik = formatIDRNumber(state.senimanPemusik);
-      const strSen = formatIDRNumber(state.totalSeniman);
+      </div>
 
-      html = `
-        <div class="pdf-section-title">I. RINCIAN KATEGORI PERAN SENIMAN / PELAKU BUDAYA (CLUSTERING)</div>
-        <table class="pdf-table-data">
-          <thead>
-            <tr>
-              <th style="width: 6%; text-align: center;">No</th>
-              <th style="width: 34%;">Kategori Peran Seniman</th>
-              <th style="width: 20%; text-align: right;">Jumlah Pelaku</th>
-              <th style="width: 40%;">Rincian Peran</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="text-align: center;">1</td>
-              <td><strong>Pemeran Utama</strong></td>
-              <td style="text-align: right; font-weight: bold;">${strUtama} Orang</td>
-              <td>Pemain utama, penyanyi, penari inti, dalang, dll.</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;">2</td>
-              <td><strong>Pemain Pendukung</strong></td>
-              <td style="text-align: right; font-weight: bold;">${strPendukung} Orang</td>
-              <td>Penari latar, paduan suara, pemain figuran, dll.</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;">3</td>
-              <td><strong>Pemusik</strong></td>
-              <td style="text-align: right; font-weight: bold;">${strPemusik} Orang</td>
-              <td>Pengiring musik di panggung (gamelan, band, dll.)</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="pdf-section-title">II. HASIL KALKULASI JUMLAH SENIMAN</div>
-        <div class="pdf-result-card">
-          <div class="pdf-calc-line">
-            <strong>Penjumlahan Kategori Peran (Clustering):</strong><br>
-            <span>${strUtama} Pemeran Utama + ${strPendukung} Pemain Pendukung + ${strPemusik} Pemusik = ${strSen} Orang</span>
-          </div>
-          <div class="pdf-banner-total">
-            <span>TOTAL PELAKU / SENIMAN TERLIBAT:</span>
-            <strong>${strSen} ORANG / SENIMAN</strong>
-          </div>
+      <!-- BAGIAN II: MODUL INDOOR -->
+      <div class="pdf-section-title">II. MODUL INDOOR &mdash; PARTISIPASI PESERTA KEGIATAN RUANGAN</div>
+      <table class="pdf-table-data">
+        <thead>
+          <tr>
+            <th style="width: 6%; text-align: center;">No</th>
+            <th style="width: 34%;">Kategori Kegiatan Indoor</th>
+            <th style="width: 22%; text-align: right;">Jumlah Peserta</th>
+            <th style="width: 38%;">Keterangan Kegiatan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">1</td>
+            <td><strong>${indoorName}</strong></td>
+            <td style="text-align: right; font-weight: bold;">${strIn} Orang</td>
+            <td>${state.indoorCategoryNote}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pdf-result-card">
+        <div class="pdf-banner-total" style="border-top: none; padding-top: 0;">
+          <span>TOTAL PESERTA KEGIATAN INDOOR (${indoorName.toUpperCase()}):</span>
+          <strong>${strIn} ORANG / PESERTA</strong>
         </div>
-      `;
-    }
+      </div>
+
+      <!-- BAGIAN III: MODUL HITUNG SENIMAN -->
+      <div class="pdf-section-title">III. MODUL HITUNG SENIMAN &mdash; TEKNIK KATEGORI PERAN (CLUSTERING)</div>
+      <table class="pdf-table-data">
+        <thead>
+          <tr>
+            <th style="width: 6%; text-align: center;">No</th>
+            <th style="width: 34%;">Kategori Peran Seniman</th>
+            <th style="width: 20%; text-align: right;">Jumlah Pelaku</th>
+            <th style="width: 40%;">Rincian Peran</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">1</td>
+            <td><strong>Pemeran Utama</strong></td>
+            <td style="text-align: right; font-weight: bold;">${strUtama} Orang</td>
+            <td>Pemain utama, penyanyi, penari inti, dalang, dll.</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">2</td>
+            <td><strong>Pemain Pendukung</strong></td>
+            <td style="text-align: right; font-weight: bold;">${strPendukung} Orang</td>
+            <td>Penari latar, paduan suara, pemain figuran, dll.</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">3</td>
+            <td><strong>Pemusik</strong></td>
+            <td style="text-align: right; font-weight: bold;">${strPemusik} Orang</td>
+            <td>Pengiring musik di panggung (gamelan, band, dll.)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pdf-result-card">
+        <div class="pdf-calc-line">
+          <strong>Perhitungan Kategori Peran (Clustering):</strong> ${strUtama} Utama + ${strPendukung} Pendukung + ${strPemusik} Pemusik = ${strSen} Orang
+        </div>
+        <div class="pdf-banner-total">
+          <span>TOTAL JUMLAH SENIMAN TERLIBAT:</span>
+          <strong>${strSen} ORANG / SENIMAN</strong>
+        </div>
+      </div>
+    `;
 
     container.innerHTML = html;
 
